@@ -57,16 +57,15 @@ static long long upper_edges(int n,long long target){
     }
     return best;
 }
-static vector<long long> compLB,groupLB;
+static vector<long long> compLB;
 static void init_bounds(int N=1000){
-    compLB.assign(N+1,0);groupLB.assign(N+1,0);
-    for(int q=0;q<=12;q++)compLB[q]=groupLB[q]=hill(q);
-    compLB[13]=groupLB[13]=219;
+    compLB.assign(N+1,0);
+    for(int q=0;q<=12;q++)compLB[q]=hill(q);
+    compLB[13]=219;
     for(int q=14;q<=N;q++){
         long long v=ceildiv(1LL*q*compLB[q-1],q-4);int t=q-13;
         if(t>=2){i128 num=((i128)34627*t*t-(i128)72000*t)*q*(q-1)*(q-2)*(q-3);i128 den=(i128)4000*4*13*12*t*(t-1);v=max(v,ceil128(num,den));}
         compLB[q]=v;
-        long long g=ceildiv(1LL*q*groupLB[q-1],q-4); if(q%2)g+=(hill(q)-g)&1LL; groupLB[q]=g;
     }
 }
 static inline bool completion_ok(int r,int c){
@@ -103,7 +102,6 @@ static pair<array<Q,8>,Q> row_for(const Cfg&cfg,const W&w){
     if(w.typ==4){int ss=w.a,u=s;for(int cnt=2;cnt<=4;cnt++){int idx=cnt; 
             Q jp;if(cnt==2)jp=qrat(1LL*ss*(ss-1),1LL*u*(u-1));else if(cnt==3)jp=qrat(2LL*ss*(ss-1)*(u-ss),1LL*u*(u-1)*(u-2));else jp=qrat(4LL*ss*(ss-1)*(u-ss)*(u-ss-1),1LL*u*(u-1)*(u-2)*(u-3));a[idx]=jp;}
         return {a,Q(join_lower(ss,s+h-ss))};}
-    if(w.typ==5){a[4]=1;return {a,Q(groupLB[s])};}
     throw runtime_error("bad row type");
 }
 static bool check_cert(const Cfg&cfg,const Cert&z){array<Q,8>coef{};for(auto&x:coef)x=Q(0);Q val=0;for(auto const&w:z.w){Q wt=qrat(w.num,w.den);if(wt<0)return false;auto [a,b]=row_for(cfg,w);for(int i=0;i<8;i++)coef[i]+=wt*a[i];val+=wt*b;}for(int i=0;i<8;i++)if(coef[i]>(i<5?Q(1):Q(0)))return false;return val>=hill(z.r);}
