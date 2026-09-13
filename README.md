@@ -1,6 +1,6 @@
 # Albertson conjecture verification
 
-Exact ancillary verification for the manuscript `albertson.tex`.
+Exact ancillary verification for the manuscript `A proof of Albertson's Conjencture`.
 
 ## Requirements
 
